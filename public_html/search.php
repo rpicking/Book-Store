@@ -13,7 +13,7 @@
 		<tr>
 			<td>Search In: </td>
 				<td>
-					<select name="searchon[]" multiple>
+					<select name="searchon[5]" multiple = "multiple">
 						<option value="anywhere" selected='selected'>Keyword anywhere</option>
 						<option value="title">Title</option>
 						<option value="author">Author</option>
@@ -27,8 +27,14 @@
 			<td>Category: </td>
 				<td><select name="category">
 						<option value='all' selected='selected'>All Categories</option>
-						<option value='1'>Romance</option><option value='2'>Adventure</option><option value='3'>Fiction</option><option value='4'>Horror</option>><option value='4'>Drama</option>				</select></td>
-				</form>
+						<option value='romance'>Romance</option>
+						<option value='adventure'>Adventure</option>
+						<option value='fiction'>Fiction</option>
+						<option value='horror'>Horror</option>>
+						<option value='self help'>Self Help</option>
+					</select>
+				</td>
+			</form>
 	<form action="screen1.php" method="post">	
 				<td><input type="submit" name="exit" value="EXIT 3-B.com" /></td>
 			</form>

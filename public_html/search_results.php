@@ -1,5 +1,56 @@
 <?php
 	var_dump($_GET);
+	$searchIn = $_GET['searchon'];
+	$searchFor = $_GET['searchfor'];
+	$category = $_GET['category'];
+	$search_query = "Select * from book where";
+	for ($i = 0; $i < sizeof($searchIn); $i++)
+	{
+		if ($searchIn[$i] == "anywhere") {
+			$search_query = $search_query . " title = '$searchFor'
+											  or author = '$searchFor' or publisher = '$searchFor'
+											  or isbn = '$searchFor'";
+			break;
+		}
+		if ($searchIn[$i] == "title") {
+			$search_query = $search_query . " title = '$searchFor'";
+		}
+		if ($searchIn[$i] == "author") {
+			$search_query = $search_query . " or author = '$searchFor'";
+		}
+		if ($searchIn[$i] == "publisher") {
+			$search_query = $search_query . " or publisher = '$searchFor'";
+		}
+		if ($searchIn[$i] == "isbn") {
+			$search_query = $search_query . " or isbn = '$searchFor'";
+		}
+	}
+	
+	for ($i = 0; $i < sizeof($category); $i++)
+	{
+		if ($category == "all") {
+			/*$search_query = $search_query . " genre = '$category[$i]'
+											  or genre = '$category[$i]' or genre = '$category[$i]'
+											  or genre = '$category[$i]'";*/
+			break;
+		}
+		if ($category == "romance") {
+			$search_query = $search_query . " or genre = '$category'";
+		}
+		if ($category == "action") {
+			$search_query = $search_query . " or genre = '$category'";
+		}
+		if ($category == "adventure") {
+			$search_query = $search_query . " or genre = '$category'";
+		}
+		if ($category == "horror") {
+			$search_query = $search_query . " or genre = '$category'";
+		}
+		if ($category == "self help") {
+			$search_query = $search_query . " or genre = '$category'";
+		}
+	}
+	echo $search_query;
 ?>
 <html>
 <head>
