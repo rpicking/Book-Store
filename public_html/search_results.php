@@ -1,4 +1,6 @@
-
+<?php
+	var_dump($_GET);
+?>
 <html>
 <head>
 	<title> Search Result - 3-B.com </title>

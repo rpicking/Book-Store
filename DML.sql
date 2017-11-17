@@ -15,7 +15,7 @@ insert into book
     
 insert into book
     values(1119154685, 'Hacking For Dummies', 'Kevin Beaver', '1337 Hacker Publisher', 14.99, 'Romance');
-        
+    
 insert into purchase
     values(1, 13.59);
     
@@ -44,7 +44,7 @@ insert into orders
     values('bill', 1119154685, 4, 1);
     
 insert into review(isbn, content)
-    values(1119154685, "Didn't work my computer never hacked anyone, what a rip off.\n Forgot to turn computer on");
+    values(1119154685, "Didn't work my computer never hacked anyone, what a rip off.\n Edit: Forgot to turn computer on");
     
 insert into review(isbn, content)
     values(0764572091, "Doesn't work on paper set on fire.  Thanks pam.");

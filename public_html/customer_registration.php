@@ -117,15 +117,15 @@
 			</td>
 		</tr>
 		<tr>
-			<form action = "index.php" method = "post">
+			<form action = "index.php" method = "post" onsubmit = "return test()">
 			 <td colspan="2" align="center"> 
 				<input type="submit" id="register_submit" name="register_submit" value="Register">
 			</td>
 			</form>
 			</form>
-			<form id="no_registration" action="" method="post">
+			<form id="no_registration" action="book_review.php" method="post">
 			<td colspan="2" align="center">
-				<input type="submit" id="donotregister" name="donotregister" value="Don't Register">
+				<input type="submit" id="donotregister" name="1234567891011" value="Don't Register">
 			</td>
 			</form>
 		</tr>

@@ -9,10 +9,12 @@
   db_open();
   
   $con = $link;
-  $book_num = 1234567891011;
   $array;
   $array2;
   
+  reset($_POST);
+  $book_num = key($_POST);
+    
   $sql_query_review = "SELECT * from review where isbn = $book_num";
   $sql_query_book = "select title, author from book where isbn = $book_num";
   
@@ -42,10 +44,10 @@
 				<?php
 				while ($variable = mysqli_fetch_array($bookResults)) {
 					echo "<tr>";
-      				echo "<td> Book: ".$variable[0]."</td>";
+      				echo "<td> Book: ".$variable["title"]."</td>";
 					echo "</tr>";
 					echo "<tr>";
-					echo "<td> By: ".$variable[1]."</td>";
+					echo "<td> By: ".$variable["author"]."</td>";
 					echo "</tr>";
       				}
 				?>

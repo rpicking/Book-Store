@@ -3,12 +3,16 @@ session_start();
 include("common.php");
 db_open();
 $con = $link;
-$submit = $_POST["register_submit"];
-if ($submit = "register_submit")
+var_dump($_POST);
+if ($_POST["register_submit"])
 	{
 		include("register_customer.php");
 		create_customer($con);
 	}
+	
+else if ($_POST["donotregister"]== "yes") {
+	echo "helllo";
+}
 ?>
 <title>Welcome to Best Book Buy Online Bookstore!</title>
 <body>
