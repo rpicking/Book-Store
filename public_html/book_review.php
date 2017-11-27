@@ -12,8 +12,7 @@
   $array;
   $array2;
   
-  reset($_POST);
-  $book_num = key($_POST);
+  $book_num = $_GET['book'];
     
   $sql_query_review = "SELECT * from review where isbn = $book_num";
   $sql_query_book = "select title, author from book where isbn = $book_num";
@@ -31,6 +30,11 @@
 <html>
 <head>
 <title>Book Reviews - 3-B.com</title>
+<script>
+	function goBack() {
+		window.history.back();
+	}
+</script>
 <style>
 .field_set
 {
@@ -67,9 +71,7 @@
 		</tr>
 		<tr>
 			<td colspan="2" align="center">
-				<form action="search_results.php" method="post">
-					<input type="submit" value="Done">
-				</form>
+				<button onClick = "goBack()" value="Done">Done</button>
 			</td>
 		</tr>
 	</table>
