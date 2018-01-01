@@ -54,14 +54,14 @@
 				<td><select name="category">
 						<option value='all' selected='selected'>All Categories</option>
 						<option value='romance'>Romance</option>
-						<option value='adventure'>Adventure</option>
+						<option value='action'>Action</option>
 						<option value='fiction'>Fiction</option>
 						<option value='horror'>Horror</option>>
 						<option value='self help'>Self Help</option>
 					</select>
 				</td>
 			</form>
-	<form action="screen1.php" method="post">	
+	<form action="index.php" method="post">	
 				<td><input type="submit" name="exit" value="EXIT 3-B.com" /></td>
 			</form>
 		</tr>

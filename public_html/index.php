@@ -4,20 +4,17 @@ include("common.php");
 db_open();
 $con = $link;
 
-$action = $_POST['action'];	// contains value from input
+$action = $_POST['action'];
 if ($action) {
 	header("location: ".$action);
 }
-/*
-if ($_POST["register_submit"])
+
+if ($_POST["exit"])
 	{
-		include("register_customer.php");
-		create_customer($con);
+		unset($_SESSION['loggedIn']);
+		unset($_SESSION['cart']);
 	}
-	
-else if ($_POST["donotregister"]== "yes") {
-	echo "helllo";
-}*/
+
 ?>
 <title>Welcome to Best Book Buy Online Bookstore!</title>
 <body>

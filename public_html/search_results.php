@@ -4,12 +4,6 @@
 	db_open();
   
 	$con = $link;
-	//var_dump($_GET['searchon']);
-	
-	$isbn = $_GET['cart'];
-	if($isbn) {
-		$_SESSION['cart'][] = $isbn;
-	}
 	
 	$searchFor = $_GET['searchfor'];
 	$category = $_GET['category'];
@@ -41,19 +35,19 @@
 	}
 	
 	if ($category == "romance") {
-		$search_query = $search_query . " or genre like '%$category%'";
+		$search_query = $search_query . " and genre like '%$category%'";
 	}
 	else if ($category == "action") {
-		$search_query = $search_query . " or genre like '%$category%'";
+		$search_query = $search_query . " and genre like '%$category%'";
 	}
 	else if ($category == "adventure") {
-		$search_query = $search_query . " or genre like '%$category%'";
+		$search_query = $search_query . " and genre like '%$category%'";
 	}
 	else if ($category == "horror") {
-		$search_query = $search_query . " or genre like '%$category%'";
+		$search_query = $search_query . " and genre like '%$category%'";
 	}
 	else if ($category == "self help") {
-		$search_query = $search_query . " or genre like '%$category%'";
+		$search_query = $search_query . " and genre like '%$category%'";
 	}
 	$search_query = $search_query . ";";
 	
@@ -62,16 +56,34 @@
 <html>
 <head>
 	<title> Search Result - 3-B.com </title>
+	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script>
-		function addCart(isbn) {
-			this.disabled=true;
-			window.location.href = window.location.href + "&cart=" + isbn;
-		}
+		
+		var id = null;
+
+		//function to check username availability  
+		function addtocart(id){  
+				var isbn = $('#'+id).val();  
+				
+				$.get("addToCart.php", { 
+					isbn: isbn, 
+				},  
+					function(result){ 
+						document.getElementById(id).disabled = true;
+				});  
+		  
+		} 
+		
+		 function addCart(isbn) {
+			id = isbn;
+			addtocart(id);
+		 }
 		
 		function getReview(isbn) {
 			this.disabled=true;
 			window.location.href = "book_review.php?book=" + isbn;
 		}
+
 		
 	</script>
 </head>
@@ -100,7 +112,7 @@
 					foreach ($query_results as $book) {
 							echo "<tr align = 'left'>";
 							echo "<td colspan='3' style = 'padding-top: 5px;'>
-							<button style = 'padding: 4px 12px; font: 15px; text: center;' 'name='book' onclick='addCart(".$book["isbn"].")'>Add to cart</button>
+							<button id = '".$book["isbn"]."' style = 'padding: 4px 12px; font: 15px; text: center;' name='book' onclick='addCart(".$book["isbn"].")' value = '".$book["isbn"]."'>Add to cart</button>
 							<br><br>
 							<button style = 'padding: 4px 19px; font: 15px; text: center;' 'name='getReview' onclick = 'getReview(".$book["isbn"].")'>Reviews</button>
 							</td>";
@@ -118,8 +130,8 @@
 		</tr>
 		<tr>
 			<td align= "center">
-				<form action="" method="get">
-					<input type="submit" value="Proceed To Checkout" id="checkout" name="checkout">
+				<form id="checkout" action="confirm_order.php" method="get">
+					<input type="submit" name="checkout_submit" id="checkout_submit" value="Proceed to Checkout">
 				</form>
 			</td>
 			<td align="center">

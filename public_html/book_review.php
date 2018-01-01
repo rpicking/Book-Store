@@ -1,5 +1,5 @@
 
-<!DOCTYPE html>
+
 <?php
   // Turn on the Session for this page
   session_start();

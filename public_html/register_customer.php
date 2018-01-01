@@ -1,52 +1,59 @@
 <?php  
-
-function create_customer($con){
+		session_start();
+		include("common.php");
+		db_open();
+		$con = $link;
 		
+		$username = $_POST['username'];
+		$pin = $_POST["pin"];
+		$rpin = $_POST["rpin"];
+		$fname = $_POST["fname"];
+		$lname = $_POST["lname"];
+		$address = $_POST["address"];
+		$city = $_POST["city"];
+		$state = $_POST["state"];
+		$zip = $_POST["zip"];
+		$card = $_POST["creditCard"];
+		$card_num = $_POST["card_num"];
+		$expiration = $_POST["expiration"];
 		
-		$username = $_POST["username"];
-    	$pin = $_POST["pin"];
-    	$rpin = $_POST["retype_pin"];
-    	$fname = $_POST["firstname"];
-    	$lname = $_POST["lastname"];
-    	$street = $_POST["address"];
-    	$city = $_POST["city"];
-    	$state = $_POST["state"];
-    	$zip = $_POST["zip"];
-    	$creditCard = $_POST["credit_card"];
-    	$card_number = $_POST["card_number"];
-    	$expiration = $_POST["expiration"];
-
+		if ($zip == "")
+		{
+			$createUser_query = "INSERT INTO customer(username, pin, fname, lname, street, city, state, card_type, card_num, exp_date)";
+			$createUser_query = $createUser_query . "VALUES ('$username', '$pin', '$fname', '$lname', '$street', '$city', '$state', '$credit_card', '$card_number', '$expiration');";
+		}
+		else {
+		$newzip = (int)$zip;
    	 	// Generate the SQL statement for creating user.
-   		$createUser_query = "INSERT INTO customer(username, pin, fname, lname, street, city, state_name, zip)
-        	   VALUES ('$username', '$pin', '$fname', '$lname', '$street', '$city', '$state', '$zip')";
-   		 // Generate the SQL statement for creating card with user.  
-    	$createCard_query = "INSERT INTO creditcard(card_type, card_no, exp_date, username)
-    			VALUES ('$creditCard', '$card_number', '$expiration', '$username')";
+   		$createUser_query = "INSERT INTO customer(username, pin, fname, lname, street, city, state, zip, card_type, card_num, exp_date)
+        	   VALUES ('$username', '$pin', '$fname', '$lname', '$street', '$city', '$state', ".$newzip.", '$credit_card', '$card_number', '$expiration');"; 
+    	}
+    	//$createUser_query = "insert into customer(username) values('username')";
     	$checker_query = "Select username from customer where username = '$username'";
 		$results = mysqli_query($con, $checker_query);
 		$r = mysqli_num_rows($results);
 		
     	// Run the query, if it doesn't return ANYTHING than user doesn't already exist.
-    	if ($r == 0) {
-    	$_SESSION["alreadyExists"] = false;
-    	$_SESSION["noUsername"] = false;
-		mysqli_query($con, $createUser_query); 
-    	mysqli_query($con, $createCard_query);
-    	}
-    	else if (empty($username))
-    	{
-    		$_SESSION["noUsername"] = true;
-    		$_SESSION["alreadyExists"] = false;
-    		header('Location: customer_registration.php');
+
+		if ($pin == "" || $rpin == "")
+		{
+			echo 0;
+		}
+		else if ($pin != $rpin)
+		{
+			echo 1;
+		}
+		else if ($r == 0) {
+			mysqli_query($con, $createUser_query);
+			$_SESSION['loggedIn'] = $username;
+			echo 2;
     	}
     	else if ($r != 0)
     	{
-    		$_SESSION["alreadyExists"] = true;
-    		$_SESSION["noUsername"] = false;
-    		header('Location: customer_registration.php');
+    		echo 3;
     	}	
-    	
-  }
+	    	
+
 ?>  
   
   

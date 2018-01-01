@@ -26,13 +26,12 @@
 				}
 			}
 		}
-		// go to base url to remove ?stuff from url
 		header('Location: shopping_cart.php');
 	}
 	
+
 	$done = array();
 	$results = array();
-
 	foreach ($_SESSION['cart'] as $isbn) {
 		if (!in_array($isbn, $done)) {
 			$done[] = $isbn;
@@ -90,7 +89,7 @@
 	<table align="center" style="border:2px solid blue;">
 		<tr>
 			<td align="center">
-				<form id="checkout" action="" method="get">
+				<form id="checkout" action="confirm_order.php" method="get">
 					<input type="submit" name="checkout_submit" id="checkout_submit" value="Proceed to Checkout">
 				</form>
 			</td>

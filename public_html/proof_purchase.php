@@ -1,3 +1,81 @@
+<?php
+	// Turn on the Session for this page
+	session_start();
+
+	// Include database stuff
+	include("common.php");
+	db_open();
+
+	$con = $link;
+
+	$username = $_SESSION["loggedIn"];
+	$type = $_GET['type'];
+	$number = $_GET['num'];
+	if ($type && $number) {
+		$updateUser_query = "UPDATE customer SET card_type = '$type', card_num = '$number' WHERE username = '$username';";
+		mysqli_query($con, $updateUser_query);
+
+		// go to base url to remove ?stuff from url
+		header('Location: proof_purchase.php');
+	}
+
+	// user information
+	$username = $_SESSION["loggedIn"];
+	$sql_select_user = "SELECT * from customer where username = 'charlie2';";
+	$sqlresults = mysqli_query($con, $sql_select_user);
+	$user = mysqli_fetch_assoc($sqlresults);
+
+	// book information
+	$done = array();
+	$results = array();
+
+	foreach ($_SESSION['cart'] as $isbn) {
+		if (!in_array($isbn, $done)) {
+			$done[] = $isbn;
+			$sql_select_book = "SELECT * from book where isbn = $isbn";
+
+			$sqlresults = mysqli_query($con, $sql_select_book);
+			$result = mysqli_fetch_array($sqlresults);
+			$result['quantity'] = 1;
+
+			$results[$result['isbn']] = $result;
+		}
+		else {
+			$results[$isbn]['quantity'] += 1;
+		}
+	}
+
+	// clear shopping cart
+	unset($_SESSION['cart']);
+	
+	// get time
+	$datetime = new DateTime("now", new DateTimeZone('America/Detroit'));
+	$timestamp = $datetime->format('Y-m-d');
+
+	// totals
+	$subtotal = 0;
+	foreach ($results as $book) {
+		$subtotal += $book['price'] * $book['quantity'];
+	}
+	$subtotal = number_format((float)$subtotal, 2, '.', '');
+	$shipping = number_format((float)count($_SESSION['cart']) * 2, 2, '.', '');
+	$total = number_format((float)$subtotal + $shipping, 2, '.', '');
+
+	$sql_create_order = "INSERT INTO purchase (total, purchase_date)
+		VALUES ($total, '$timestamp');";
+	
+	mysqli_query($con, $sql_create_order);
+	$purchase_id = mysqli_insert_id($con);
+
+	foreach ($results as $book) {
+		$isbn = $book['isbn'];
+		$quantity = $book['quantity'];
+		$sql_book_order = "INSERT INTO orders values('$username', '$isbn', $purchase_id, $quantity);";
+		//var_dump($sql_book_order);
+		mysqli_query($con, $sql_book_order);
+	}
+
+?>
 
 <html>
 <head>
@@ -18,10 +96,12 @@
 		<tr>
 			<td colspan="1">
 				<strong>Shipping Address:</strong><br>
-				Customer Name <br>
-				Street Address <br>
-				City <br>
-				State  Zip Code
+				<?php
+					echo $user['fname']." ".$user["lname"]."<br>";
+					echo $user['street']."<br>";
+					echo $user['city']."<br>";
+					echo $user['state']."  ".$user['zip'];
+				?>
 			</td>
 			<td colspan="1" align="right" >
 				<strong>UserID:</strong><br>
@@ -29,14 +109,21 @@
 				<strong>  Time:</strong>
 			</td>
 			<td colspan="1" align="left" >
-				username<br>
-				MM/DD/YY<br>
-				HH:MM:SS
+				<?php
+					$time = time();
+					
+
+					echo $user['username']."<br>";
+					echo $datetime->format('m/d/Y')."<br>";
+					echo $datetime->format('h:i:s');
+				?>
 			</td>
 			<tr>
 				<td colspan="1">
 					<strong>Credit Card Information:</strong><br>
-					VISA - 1234567890
+					<?php
+						echo $user['card_type']." - ".$user['card_num']."<br>";
+					?>
 				</td>
 			</tr>
 		</tr>
@@ -46,24 +133,21 @@
 			<th colspan="1"><strong>Qty</strong></th>
 			<th colspan="1"><strong>Price</strong></th>
 		</tr>
-		<tr class="red_border">
-			<td colspan="2" align="left">
-				SQL Server 2000 for Experienced DBA's<br>
-				<strong>By </strong> Brian Knight<br>
-				<strong>Price: </strong>$34.99
-			</td>
-			<td colspan="1">1</td>
-			<td colspan="1">$34.99</td>
-		</tr>
-		<tr class="red_border">
-			<td colspan="2" align="left">
-				The Guru's Guide to Transact-SQL<br>
-				<strong>By </strong> Ken Henderson<br>
-				<strong>Price: </strong>$38.49
-			</td>
-			<td colspan="1">1</td>
-			<td colspan="1">$34.99</td>
-		</tr>
+
+		<?php
+			foreach ($results as $book) {
+				$book_subtotal = number_format((float)$book['price'] * $book['quantity'], 2, '.', '');
+				echo "<tr class='red_border'>";
+				echo "<td colspan='2' align='left'>";
+				echo $book['title']."<br>";
+				echo "<strong>By </strong>".$book['author']."<br>";
+				echo "<strong>Price: </strong>$".$book['price'];
+				echo "</td>";
+				echo "<td colspan='1' align='center'>".$book['quantity']."</td>";
+				echo "<td colspan='1' align='center'>$".$book_subtotal."</td>";
+				echo "</tr>";
+			}
+		?>
 
 		<tr>
 			<td colspan="1" width="50px" style="font-size: 12px" align="right" bgcolor="#a0dcff">
@@ -76,19 +160,20 @@
 			</td>
 			<td colspan="1" align="left">
 				<strong>
-					$73.98<br>
-					$4.00<br>
-					-------<br>
-					$77.98
+					<?php
+						
+						echo "$".$subtotal."</br>";
+						echo "$".$shipping."</br>";
+						echo "--------<br>";
+						echo "$".$total;
+					?>
 				</strong>
 			</td>
 		</tr>
 		
 		<tr>
 			<td align= "center">
-				<form action="" method="get">
-					<input type="submit" value="Print" id="print" name="Print">
-				</form>
+				<button name="buy" onclick="window.print()">Print</button>
 			</td>
 			<td align="center">
 				<form action="search.php" method="post">
